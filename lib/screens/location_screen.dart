@@ -1,12 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-
 import '../controllers/location_controller.dart';
 import '../controllers/native_ad_controller.dart';
 import '../helpers/ad_helper.dart';
-import '../main.dart';
 import '../widgets/vpn_card.dart';
 
 class LocationScreen extends StatelessWidget {
@@ -17,65 +14,66 @@ class LocationScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (_controller.vpnList.isEmpty) _controller.getVpnData();
+    // Initialize the Ad only once
+    if (_adController.ad == null) {
+      _adController.ad = AdHelper.loadNativeAd(adController: _adController);
+    }
 
-    _adController.ad = AdHelper.loadNativeAd(adController: _adController);
+    // Load VPN data if it's empty and not already loading
+    if (_controller.vpnList.isEmpty && !_controller.isLoading.value) {
+      _controller.getVpnData();
+    }
 
     return Obx(
       () => Scaffold(
         backgroundColor: Color(0xff13152a),
-        //app bar
-
         appBar: AppBar(
           automaticallyImplyLeading: true,
           foregroundColor: Colors.white,
           backgroundColor: Color(0xff13152a),
           title: Text(
             'VPN Locations (${_controller.vpnList.length})',
-            style: TextStyle(color: const Color.fromARGB(255, 255, 255, 255)),
+            style: TextStyle(color: Colors.white),
           ),
         ),
-
         bottomNavigationBar:
             _adController.ad != null && _adController.adLoaded.isTrue
                 ? SafeArea(
                     child: SizedBox(
-                        height: 85, child: AdWidget(ad: _adController.ad!)))
+                        height: 85, child: AdWidget(ad: _adController.ad!)),
+                  )
                 : null,
-
-        //refresh button
         floatingActionButton: Padding(
           padding: const EdgeInsets.only(bottom: 10, right: 10),
           child: FloatingActionButton(
-              backgroundColor: Color(0xff6a6b9d),
-              onPressed: () => _controller.getVpnData(),
-              child: Icon(Icons.refresh)),
+            backgroundColor: Color(0xff6a6b9d),
+            onPressed: () => _controller.getVpnData(),
+            child: Icon(Icons.refresh),
+          ),
         ),
-
         body: _controller.isLoading.value
-            ? Center(
-                child: CircularProgressIndicator(),
-              )
+            ? Center(child: CircularProgressIndicator())
             : _controller.vpnList.isEmpty
                 ? _noVPNFound()
-                : _vpnData(),
+                : _vpnData(),  
       ),
     );
   }
 
   _vpnData() {
-    // Sorting the VPN list by speed in descending order
+    // Create a sorted copy of the VPN list
     List vpnList = List.from(_controller.vpnList);
-    vpnList.sort((a, b) => b.speed.compareTo(a.speed)); // Assuming speed is a numerical property
+    vpnList.sort((a, b) =>
+        b.speed.compareTo(a.speed)); // Assuming speed is a numerical property
 
     return ListView.builder(
       itemCount: vpnList.length,
       physics: BouncingScrollPhysics(),
       padding: EdgeInsets.only(
-        top: mq.height * .015,
-        bottom: mq.height * .1,
-        left: mq.width * .04,
-        right: mq.width * .04,
+        top: 15, // Adjust these values as needed
+        bottom: 100,
+        left: 16,
+        right: 16,
       ),
       itemBuilder: (ctx, i) => VpnCard(vpn: vpnList[i]),
     );
@@ -85,7 +83,7 @@ class LocationScreen extends StatelessWidget {
         child: Text(
           'VPNs Not Found! 😔',
           style: TextStyle(
-              fontSize: 18, color: Colors.black54, fontWeight: FontWeight.bold),
+              fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold),
         ),
       );
 }

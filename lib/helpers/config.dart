@@ -6,8 +6,8 @@ class Config {
   static final FirebaseRemoteConfig _config = FirebaseRemoteConfig.instance;
 
   static const Map<String, dynamic> _defaultValues = {
-    "interstitial_ad": "ca-app-pub-3940256099942544/1033173712",
-    "native_ad": "ca-app-pub-3940256099942544/2247696110",
+    "interstitial_ad": "ca-app-pub-3470860632886709/7411230622",
+    "native_ad": "ca-app-pub-3470860632886709/5692753021",
     "rewarded_ad": "ca-app-pub-3940256099942544/5224354917",
     "show_ads": true,
   };

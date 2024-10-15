@@ -1,15 +1,13 @@
 import 'dart:developer';
-
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-
 import '../controllers/native_ad_controller.dart';
 import 'config.dart';
 import 'my_dialogs.dart';
 
 class AdHelper {
-  // for initializing ads sdk
+  // Initialize Google Mobile Ads SDK
   static Future<void> initAds() async {
     await MobileAds.instance.initialize();
   }
@@ -32,12 +30,13 @@ class AdHelper {
       request: AdRequest(),
       adLoadCallback: InterstitialAdLoadCallback(
         onAdLoaded: (ad) {
-          //ad listener
-          ad.fullScreenContentCallback =
-              FullScreenContentCallback(onAdDismissedFullScreenContent: (ad) {
-            _resetInterstitialAd();
-            precacheInterstitialAd();
-          });
+          // Ad listener
+          ad.fullScreenContentCallback = FullScreenContentCallback(
+            onAdDismissedFullScreenContent: (ad) {
+              _resetInterstitialAd();
+              precacheInterstitialAd(); // Load next ad
+            },
+          );
           _interstitialAd = ad;
           _interstitialAdLoaded = true;
         },
@@ -56,7 +55,7 @@ class AdHelper {
   }
 
   static void showInterstitialAd({required VoidCallback onComplete}) {
-    log('Interstitial Ad Id: ${Config.interstitialAd}');
+    log('Showing Interstitial Ad - Id: ${Config.interstitialAd}');
 
     if (Config.hideAds) {
       onComplete();
@@ -69,6 +68,7 @@ class AdHelper {
       return;
     }
 
+    // Show progress dialog while loading ad
     MyDialogs.showProgress();
 
     InterstitialAd.load(
@@ -76,14 +76,14 @@ class AdHelper {
       request: AdRequest(),
       adLoadCallback: InterstitialAdLoadCallback(
         onAdLoaded: (ad) {
-          //ad listener
-          ad.fullScreenContentCallback =
-              FullScreenContentCallback(onAdDismissedFullScreenContent: (ad) {
-            onComplete();
-            _resetInterstitialAd();
-            precacheInterstitialAd();
-          });
-          Get.back();
+          Get.back(); // Close the loading dialog
+          ad.fullScreenContentCallback = FullScreenContentCallback(
+            onAdDismissedFullScreenContent: (ad) {
+              onComplete();
+              _resetInterstitialAd();
+              precacheInterstitialAd();
+            },
+          );
           ad.show();
         },
         onAdFailedToLoad: (err) {
@@ -103,22 +103,20 @@ class AdHelper {
     if (Config.hideAds) return;
 
     _nativeAd = NativeAd(
-        adUnitId: Config.nativeAd,
-        listener: NativeAdListener(
-          onAdLoaded: (ad) {
-            log('$NativeAd loaded.');
-            _nativeAdLoaded = true;
-          },
-          onAdFailedToLoad: (ad, error) {
-            _resetNativeAd();
-            log('$NativeAd failed to load: $error');
-          },
-        ),
-        request: const AdRequest(),
-        // Styling
-        nativeTemplateStyle:
-            NativeTemplateStyle(templateType: TemplateType.small))
-      ..load();
+      adUnitId: Config.nativeAd,
+      listener: NativeAdListener(
+        onAdLoaded: (ad) {
+          log('Native Ad loaded.');
+          _nativeAdLoaded = true;
+        },
+        onAdFailedToLoad: (ad, error) {
+          _resetNativeAd();
+          log('Native Ad failed to load: $error');
+        },
+      ),
+      request: const AdRequest(),
+      nativeTemplateStyle: NativeTemplateStyle(templateType: TemplateType.small),
+    )..load();
   }
 
   static void _resetNativeAd() {
@@ -128,7 +126,7 @@ class AdHelper {
   }
 
   static NativeAd? loadNativeAd({required NativeAdController adController}) {
-    log('Native Ad Id: ${Config.nativeAd}');
+    log('Loading Native Ad - Id: ${Config.nativeAd}');
 
     if (Config.hideAds) return null;
 
@@ -138,24 +136,22 @@ class AdHelper {
     }
 
     return NativeAd(
-        adUnitId: Config.nativeAd,
-        listener: NativeAdListener(
-          onAdLoaded: (ad) {
-            log('$NativeAd loaded.');
-            adController.adLoaded.value = true;
-            _resetNativeAd();
-            precacheNativeAd();
-          },
-          onAdFailedToLoad: (ad, error) {
-            _resetNativeAd();
-            log('$NativeAd failed to load: $error');
-          },
-        ),
-        request: const AdRequest(),
-        // Styling
-        nativeTemplateStyle:
-            NativeTemplateStyle(templateType: TemplateType.small))
-      ..load();
+      adUnitId: Config.nativeAd,
+      listener: NativeAdListener(
+        onAdLoaded: (ad) {
+          log('Native Ad loaded.');
+          adController.adLoaded.value = true;
+          _resetNativeAd();
+          precacheNativeAd(); // Precache next native ad
+        },
+        onAdFailedToLoad: (ad, error) {
+          _resetNativeAd();
+          log('Native Ad failed to load: $error');
+        },
+      ),
+      request: const AdRequest(),
+      nativeTemplateStyle: NativeTemplateStyle(templateType: TemplateType.small),
+    )..load();
   }
 
   //*****************Rewarded Ad******************
@@ -175,18 +171,18 @@ class AdHelper {
       request: AdRequest(),
       rewardedAdLoadCallback: RewardedAdLoadCallback(
         onAdLoaded: (ad) {
-          Get.back();
+          Get.back(); // Close the loading dialog
 
-          //reward listener
-          ad.show(
-              onUserEarnedReward: (AdWithoutView ad, RewardItem rewardItem) {
+          // Reward listener
+          ad.show(onUserEarnedReward: (AdWithoutView ad, RewardItem rewardItem) {
             onComplete();
           });
         },
         onAdFailedToLoad: (err) {
           Get.back();
-          log('Failed to load an interstitial ad: ${err.message}');
-          // onComplete();
+          log('Failed to load a rewarded ad: ${err.message}');
+          // Optionally call onComplete if you don't want to block on failure
+          onComplete();
         },
       ),
     );

@@ -1,0 +1,92 @@
+class Vpn {
+  late final String hostname;
+  late final String ip;
+  late final String ping;
+  late final int speed;
+  late final String countryLong;
+  late final String countryShort;
+  late final int numVpnSessions;
+  late final String entryCountry; // Add this field
+  late final String exitCountry;  // Add this field
+  late final List<Server> servers; // Add a list of servers
+  late final String openVPNConfigDataBase64;
+
+  Vpn({
+    required this.hostname,
+    required this.ip,
+    required this.ping,
+    required this.speed,
+    required this.countryLong,
+    required this.countryShort,
+    required this.numVpnSessions,
+    required this.entryCountry, // Initialize entryCountry
+    required this.exitCountry,   // Initialize exitCountry
+    required this.servers,       // Initialize servers
+    required this.openVPNConfigDataBase64,
+  });
+
+  Vpn.fromJson(Map<String, dynamic> json) {
+    hostname = json['Domain'] ?? ''; // Change to match the JSON structure
+    ip = json['EntryIP'] ?? ''; // Adjust as necessary
+    ping = json['Ping'].toString();
+    speed = json['Speed'] ?? 0;
+    countryLong = json['HostCountry'] ?? ''; // Update according to your needs
+    countryShort = json['EntryCountry'] ?? '';
+    numVpnSessions = json['NumVpnSessions'] ?? 0;
+    entryCountry = json['EntryCountry'] ?? ''; // Set entryCountry
+    exitCountry = json['ExitCountry'] ?? ''; // Set exitCountry
+    servers = (json['Servers'] as List)
+        .map((server) => Server.fromJson(server))
+        .toList(); // Map servers from JSON
+
+    openVPNConfigDataBase64 = json['OpenVPN_ConfigData_Base64'] ?? '';
+  }
+
+  Map<String, dynamic> toJson() {
+    final data = <String, dynamic>{};
+    data['Domain'] = hostname; // Adjusted according to the JSON structure
+    data['EntryIP'] = ip; // Adjusted as necessary
+    data['Ping'] = ping;
+    data['Speed'] = speed;
+    data['HostCountry'] = countryLong; // Update as necessary
+    data['EntryCountry'] = countryShort; // Update as necessary
+    data['NumVpnSessions'] = numVpnSessions;
+    data['OpenVPN_ConfigData_Base64'] = openVPNConfigDataBase64;
+    data['Servers'] = servers.map((server) => server.toJson()).toList(); // Add server mapping
+    return data;
+  }
+}
+
+class Server {
+  late final String entryIP;
+  late final String exitIP;
+  late final String domain;
+  late final String id;
+  late final String x25519PublicKey;
+
+  Server({
+    required this.entryIP,
+    required this.exitIP,
+    required this.domain,
+    required this.id,
+    required this.x25519PublicKey,
+  });
+
+  Server.fromJson(Map<String, dynamic> json) {
+    entryIP = json['EntryIP'] ?? '';
+    exitIP = json['ExitIP'] ?? '';
+    domain = json['Domain'] ?? '';
+    id = json['ID'] ?? '';
+    x25519PublicKey = json['X25519PublicKey'] ?? '';
+  }
+
+  Map<String, dynamic> toJson() {
+    final data = <String, dynamic>{};
+    data['EntryIP'] = entryIP;
+    data['ExitIP'] = exitIP;
+    data['Domain'] = domain;
+    data['ID'] = id;
+    data['X25519PublicKey'] = x25519PublicKey;
+    return data;
+  }
+}

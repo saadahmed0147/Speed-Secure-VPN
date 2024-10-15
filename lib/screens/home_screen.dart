@@ -5,6 +5,7 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:vpn_basic_project/apis/apis.dart';
 import 'package:vpn_basic_project/controllers/native_ad_controller.dart';
 import 'package:vpn_basic_project/helpers/ad_helper.dart';
+import 'package:vpn_basic_project/helpers/config.dart';
 import 'package:vpn_basic_project/models/ip_details.dart';
 import 'package:vpn_basic_project/widgets/center_text.dart';
 import 'package:vpn_basic_project/widgets/detail_card.dart';
@@ -52,11 +53,8 @@ class HomeScreen extends StatelessWidget {
               );
             },
           ),
-
-    
           centerTitle: true,
           backgroundColor: Color(0xff13162b),
-
           actions: [
             Padding(
               padding: const EdgeInsets.all(8.0),
@@ -69,16 +67,14 @@ class HomeScreen extends StatelessWidget {
             ),
           ],
         ),
-        bottomNavigationBar:
-            // Config.hideAds ? null:
-            _adController.ad != null && _adController.adLoaded.isTrue
+        bottomNavigationBar: Config.hideAds
+            ? null
+            : _adController.ad != null && _adController.adLoaded.isTrue
                 ? SafeArea(
                     child: SizedBox(
                         height: 85, child: AdWidget(ad: _adController.ad!)))
                 : null,
         drawer: DrawerWidget(),
-
-
         //body
         body: Padding(
           padding: EdgeInsets.symmetric(horizontal: mq.height * 0.02),
@@ -124,11 +120,9 @@ class HomeScreen extends StatelessWidget {
                     ],
                   ),
                 ),
-
                 SizedBox(
                   height: mq.height * 0.03,
                 ),
-
                 StreamBuilder(
                   stream: VpnEngine.vpnStatusSnapshot(),
                   builder: (context, snapshot) => Row(
@@ -194,7 +188,6 @@ class HomeScreen extends StatelessWidget {
                           size: 40,
                           color: Colors.white,
                         ),
-
                         SizedBox(height: 4),
                       ],
                     ),
@@ -203,7 +196,6 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
           ),
-
           //connection status label
           Container(
             margin:
@@ -221,5 +213,4 @@ class HomeScreen extends StatelessWidget {
           ),
         ],
       );
-
 }

@@ -1,6 +1,6 @@
 class Vpn {
-  late final String hostname;
-  late final String ip;
+  late final String? hostname;
+  late final String? ip;
   late final String ping;
   late final int speed;
   late final String countryLong;

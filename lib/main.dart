@@ -1,21 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 import 'helpers/ad_helper.dart';
-import 'helpers/config.dart';
+import 'helpers/config.dart'; 
 import 'helpers/pref.dart';
 import 'screens/splash_screen.dart';
 
 //global object for accessing device screen size
-late Size mq;
+late Size mq; 
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   //enter full-screen
-  SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
+  // SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual);
 
   //firebase initialization
   await Firebase.initializeApp();
@@ -27,13 +26,16 @@ Future<void> main() async {
 
   await AdHelper.initAds();
 
-    // SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
+  // SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
 
   //for setting orientation to portrait only
-  await SystemChrome.setPreferredOrientations(
-      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]).then((v) {
-    runApp(const MyApp());
-  });
+  runApp(const MyApp());
+
+  // await SystemChrome.setPreferredOrientations(
+  //     [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]).then((v) {
+
+  // runApp(const MyApp());
+  // });
 }
 
 class MyApp extends StatelessWidget {

@@ -13,6 +13,7 @@ class LocationController extends GetxController {
     isLoading.value = true;
     vpnList.clear();
     vpnList = await APIs.getVPNServers();
-    isLoading.value = false;
+      isLoading.value = false;
+      
+    }
   }
-}
