@@ -32,7 +32,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    namespace = "com.harshRajpurohit.freeVpn"
+    namespace = "com.secureHub.speedSecureVpn"
     compileSdk = 34
     ndkVersion = flutter.ndkVersion
 
@@ -46,7 +46,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.harshRajpurohit.freeVpn"
+        applicationId = "com.secureHub.speedSecureVpn"
         minSdk = 21
         targetSdk = flutter.targetSdkVersion
         versionCode = flutterVersionCode.toInteger()

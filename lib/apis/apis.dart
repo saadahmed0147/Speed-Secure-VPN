@@ -13,7 +13,7 @@ class APIs {
     final List<Vpn> vpnList = [];
 
     try {
-      final res = await get(Uri.parse('https://spangled-guiltless-riddle.glitch.me/api/get-ovpn/'));
+      final res = await get(Uri.parse('https://speedsecurevpn.vercel.app/api/get-ovpn'));
 
       // Log response status and body for debugging
       log('Response Status: ${res.statusCode}');

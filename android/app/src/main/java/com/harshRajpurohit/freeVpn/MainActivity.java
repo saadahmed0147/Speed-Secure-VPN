@@ -1,4 +1,4 @@
-package com.harshRajpurohit.freeVpn;
+package com.secureHub.speedSecureVpn;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
